@@ -132,7 +132,7 @@ pre[class] {
 # Fit a multinomial logistic regression model 
 library(VGAM)
 fit <- vglm(JobInvolvement ~ ., 
-            data = data_new, 
+            data = employee1, 
             family = multinomial) 
 
 ```
