@@ -19,7 +19,7 @@ knitr::opts_chunk$set(
   fig.width=9, fig.height=3.5, fig.retina=3,
   out.width = "100%",
   cache = FALSE,
-  echo = TRUE,
+  echo = FALSE,
   message = FALSE, 
   warning = FALSE,
   hiline = TRUE
@@ -33,7 +33,7 @@ style_mono_light(
   header_font_google = google_font("Open Sans", "300"),
   text_font_google   = google_font("Lato", "400"),
   code_font_google   = google_font("IBM Plex Mono"),
-  base_color = "#79E6F2")
+  base_color = "#1F7799")
 
 ```
 
