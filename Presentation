@@ -1,1 +1,108 @@
+---
+title: "Employee Involvement"
+subtitle: ''
+author: Gianna LaFrance, Jaiden Neff, & Samantha Gouveia
+output:
+  xaringan::moon_reader:
+    css: xaringan-themer.css
+    nature:
+      slideNumberFormat: "%current%"
+      highlightStyle: github
+      highlightLines: true
+      ratio: 16:9
+      countIncrementalSlides: true
+---
 
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+knitr::opts_chunk$set(
+  fig.width=9, fig.height=3.5, fig.retina=3,
+  out.width = "100%",
+  cache = FALSE,
+  echo = TRUE,
+  message = FALSE, 
+  warning = FALSE,
+  hiline = TRUE
+)
+```
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+library(xaringanthemer)
+
+style_mono_light(
+  header_font_google = google_font("Open Sans", "300"),
+  text_font_google   = google_font("Lato", "400"),
+  code_font_google   = google_font("IBM Plex Mono"),
+  base_color = "#79E6F2")
+
+```
+
+<h1 align = "center"> Table of Contents </h1>
+<center><font size="7">  
+- Introduction <br>
+- Exploratory Data Analysis <br>
+- Principal Componenet Analysis <br>
+- Multinomial Logistic Regression <br>
+- Conclusion & Discussion
+</font></center>
+
+---
+name: colors
+
+## Introduction
+
+
+```{r}
+
+data <- read.csv("C:/Users/Gianna/Documents/STA 490/Final Project/EmployeeAttritionData.csv")
+
+
+library(tidyverse)
+data_new <- data %>% 
+  select(JobInvolvement, JobSatisfaction, Age, Department, MonthlyIncome, YearsSinceLastPromotion, WorkLifeBalance, YearsAtCompany, NumCompaniesWorked)
+
+```
+
+
+---
+class: inverse center middle
+
+# Exploratory Data Analysis
+
+
+---
+name: colors
+
+## Title
+
+
+---
+class: inverse center middle
+
+# Principal Component Analysis
+
+
+---
+name: colors
+
+## Title
+
+
+
+
+---
+class: inverse center middle
+
+# Multinomial Logistic Regression
+
+
+---
+name: colors
+
+## Title
+
+
+---
+name: colors
+
+## Conclusion
