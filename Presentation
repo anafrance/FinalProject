@@ -53,14 +53,11 @@ name: colors
 
 
 ```{r}
-
-data <- read.csv("C:/Users/Gianna/Documents/STA 490/Final Project/EmployeeAttritionData.csv")
-
+employee <- read.csv("C:/Users/Gianna/Documents/STA 490/Final Project/EmployeeAttritionData.csv")
 
 library(tidyverse)
-data_new <- data %>% 
+employee1 <- employee %>% 
   select(JobInvolvement, JobSatisfaction, Age, Department, MonthlyIncome, YearsSinceLastPromotion, WorkLifeBalance, YearsAtCompany, NumCompaniesWorked)
-
 ```
 
 
