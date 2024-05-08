@@ -92,6 +92,60 @@ class: inverse center middle
 
 # Multinomial Logistic Regression
 
+---
+name: colors
+
+## MLR
+
+We used the 4th level as the baseline for Job Involvement.
+
+First, we did a model with all of our variables: 
+- Job Satisfaction
+- Department
+- Hourly Rate
+- Years since last promotion
+- Work life balance
+- Age
+- Number of Comapnies Worked
+- Business Travel
+- Environment Satisfaction
+- Marial Status
+
+The only variables statistically significant were Job Satisfaction, Business Travel, Environment Satisfaction, and Marital Status.
+
+---
+name: colors
+
+## Model
+
+```{css, echo=FALSE}
+pre {
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+pre[class] {
+  max-height: 200px;
+}
+```
+```{r}
+# Fit a multinomial logistic regression model 
+library(VGAM)
+fit <- vglm(JobInvolvement ~ ., 
+            data = data_new, 
+            family = multinomial) 
+
+```
+```{css, echo=FALSE}
+.scroll-100 {
+  max-height: 200px;
+  overflow-y: auto;
+  background-color: inherit;
+}
+```
+```{r, class.output="scroll-100"}
+print(summary(fit))
+```
 
 ---
 name: colors
