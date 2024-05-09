@@ -407,16 +407,6 @@ of variation explained by the corresponding PCAs in the self-compassion survey."
 ```
 
 
-```{r}
-# Fit a multinomial logistic regression model 
-library(VGAM)
-fit <- vglm(JobInvolvement ~ Loadings, 
-            data = employee1, 
-            family = multinomial) 
-
-```
-
-
 ---
 class: inverse center middle
 
@@ -477,12 +467,6 @@ fit <- vglm(JobInvolvement ~ .,
 ```{r, class.output="scroll-100"}
 print(summary(fit))
 ```
-
-
----
-name: colors
-
-## Title
 
 
 ---
