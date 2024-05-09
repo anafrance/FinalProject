@@ -47,19 +47,40 @@ style_mono_light(
 </font></center>
 
 ---
-name: colors
 
 ## Introduction
 
+Our goal for this study is to see the effect that factors have on the overall job involvement at our company. We plan to run statistical tests and observe the data to draw conclusions that will lead us to make informed decisions about how to improve job involvement. 
+
+The data set has 1470 rows and 35 columns.  
+
+We will be focusing on the following variables for our exploratory data analysis and we will keep these for our sample population.
+
+- Job Involvement: Likert scale 1-4 from low to very high
+- Environment Satisfaction: Likert scale 1-4 from low to very high
+- Job Satisfaction: Likert scale 1-4 from low to very high
+- Work Life Balance:Likert scale 1-4 from low to very high
+- Monthly Income:
+- Years Since Last Promotion:
+- Years At Company:
+- Age:
+- Number Companies Worked:
+- Department:
+- Job Level:
+- Years With Current Manager:
+- Hourly Rate:
+
 
 ```{r}
+
 employee <- read.csv("C:/Users/Gianna/Documents/STA 490/Final Project/EmployeeAttritionData.csv")
 
 library(tidyverse)
 employee1 <- employee %>% 
-  select(JobInvolvement, JobSatisfaction, Age, Department, MonthlyIncome, YearsSinceLastPromotion, WorkLifeBalance, YearsAtCompany, NumCompaniesWorked)
-```
+  dplyr::select(JobInvolvement, JobSatisfaction, EnvironmentSatisfaction)
 
+
+```
 
 ---
 class: inverse center middle
@@ -68,9 +89,185 @@ class: inverse center middle
 
 
 ---
-name: colors
 
-## Title
+## Job Involvement Data
+
+```{r}
+
+# Print title for frequency distribution of job involvement
+cat("Frequency Distribution of Job Involvement:\n")
+
+# Display frequency distribution table of job involvement
+print(table(employee$JobInvolvement))
+
+
+# Frequency graph for Job Involvement
+barplot(table(employee$JobInvolvement), main = "Job Involvement", xlab = "Level of Involvement", ylab = "Frequency")
+
+```
+
+---
+
+## Frequency Graphics
+
+```{r}
+# Frequency graph for Job Involvement
+barplot(table(employee$EnvironmentSatisfaction), main = "Environment Satisfaction", xlab = "Level of Involvement", ylab = "Frequency")
+```
+
+---
+
+## Frequency Graphics
+
+```{r}
+
+# Frequency graph for Job Involvement
+barplot(table(employee$JobSatisfaction), main = "Job Satisfaction", xlab = "Level of Involvement", ylab = "Frequency")
+
+
+```
+
+
+---
+
+## Summary Statistics
+
+```{r}
+
+# Summary statistics with titles for each factor
+
+# HourlyRate
+cat("\nSummary statistics for Hourly Rate:\n")
+summary(employee$HourlyRate)
+
+# Years Since Last Promotion
+cat("\nSummary statistics for Years Since Last Promotion:\n")
+summary(employee$YearsSinceLastPromotion)
+
+# Age
+cat("\nSummary statistics for Age:\n")
+summary(employee$Age)
+
+# Number of Companies Worked For
+cat("\nSummary statistics for Number of Companies Worked For:\n")
+summary(employee$NumCompaniesWorked)
+
+```
+
+---
+
+## Scatter Plot for Age 
+
+```{r}
+
+# Create a scatter plot of age and job involvement
+plot(employee$Age, employee$JobInvolvement,
+     xlab = "Age", ylab = "Job Involvement",
+     main = "Scatter Plot of Age and Job Involvement")
+
+
+```
+
+---
+
+## Job Involvemnet and Satisfaction 
+
+```{r}
+
+# Create a contingency table of job involvement and job satisfaction
+contingency_table <- table(employee$JobInvolvement, employee$JobSatisfaction)
+
+# Convert the contingency table into a data frame
+df <- as.data.frame.matrix(contingency_table)
+
+# Set the row names as the levels of job involvement
+row.names(df) <- levels(employee$JobInvolvement)
+
+# Set the colors for the bars
+bar_colors <- c("skyblue", "pink", "orange", "green")
+
+# Plot a clustered bar chart
+barplot(as.matrix(df), beside = TRUE, col = bar_colors,
+        main = "Clustered Bar Chart of Job Involvement vs. Job Satisfaction",
+        xlab = "Job Involvement", ylab = "Frequency",
+        legend.text = TRUE)
+
+```
+
+
+---
+
+## Department
+
+
+```{r}
+
+# Create a barplot to visualize job involvement across departments
+barplot(table(employee$Department, employee$JobInvolvement),
+        beside = TRUE,
+        legend.text = TRUE,
+        main = "Job Involvement Across Departments",
+        xlab = "Involvemnet",
+        ylab = "Frequency",
+        col = c("skyblue", "pink", "magenta") # Color of the bars
+)
+
+```
+
+---
+
+## Correlation Plot 
+
+```{r}
+
+# Load required libraries
+library(corrplot)
+
+# Select relevant columns for correlation analysis
+selected_cols <- c("JobInvolvement", "EnvironmentSatisfaction", "JobSatisfaction", 
+                   "MonthlyIncome", "YearsSinceLastPromotion", "YearsAtCompany", 
+                   "WorkLifeBalance", "Age", "NumCompaniesWorked", "JobLevel", "YearsWithCurrManager", "HourlyRate")
+
+# Create correlation matrix
+correlation_matrix <- cor(employee[, selected_cols])
+
+# Plot correlation matrix with clearer labels and larger font size
+corrplot(correlation_matrix, method = "circle", type = "upper",
+         tl.col = "black", tl.srt = 45,
+         title = "Correlation Matrix of Employee Factors",
+         tl.cex = 0.8, # Set text label size
+         cl.cex = 0.8, # Set color legend label size
+         mar = c(1,1,1,1) # Set margin size
+)
+
+```
+
+---
+
+## Correlation Coefficents
+
+```{r}
+
+# Calculate correlations between JobInvolvement and other variables
+correlation_with_job_involvement <- cor(employee[, selected_cols])["JobInvolvement", ]
+
+# Print correlation coefficients and their significance levels
+print(correlation_with_job_involvement)
+
+```
+
+
+---
+
+## Findings 
+
+We found that there are not that many factors that are highly correlated with Job Involvement there are a few however that have higher correlations and that we will be including in the Final Model 
+
+Multicollinearity in monthly income and job level and Years at Company and Years with Current Manager so we removed these factors because they were not significant on their own 
+
+Monthly Income and Hourly Rate are not correlated which I thought was interesting 
+
+A lot of the variables are more highly correlated to each other than they are to the variable Job Involvement 
 
 
 ---
@@ -100,18 +297,16 @@ name: colors
 We used the 4th level as the baseline for Job Involvement.
 
 First, we did a model with all of our variables: 
-- Job Satisfaction
-- Department
-- Hourly Rate
-- Years since last promotion
-- Work life balance
-- Age
-- Number of Comapnies Worked
-- Business Travel
-- Environment Satisfaction
-- Marial Status
+- Environment Satisfaction: Likert scale 1-4 from low to very high
+- Job Satisfaction: Likert scale 1-4 from low to very high
+- Work Life Balance:Likert scale 1-4 from low to very high
+- Years Since Last Promotion:
+- Age:
+- Number Companies Worked:
+- Department:
+- Hourly Rate:
 
-The only variables statistically significant were Job Satisfaction, Business Travel, Environment Satisfaction, and Marital Status.
+The only variables that were statistically significant were Job Satisfaction and Environment Satisfaction.
 
 ---
 name: colors
@@ -128,6 +323,7 @@ pre[class] {
   max-height: 200px;
 }
 ```
+
 ```{r}
 # Fit a multinomial logistic regression model 
 library(VGAM)
@@ -136,6 +332,7 @@ fit <- vglm(JobInvolvement ~ .,
             family = multinomial) 
 
 ```
+
 ```{css, echo=FALSE}
 .scroll-100 {
   max-height: 200px;
@@ -143,9 +340,11 @@ fit <- vglm(JobInvolvement ~ .,
   background-color: inherit;
 }
 ```
+
 ```{r, class.output="scroll-100"}
 print(summary(fit))
 ```
+
 
 ---
 name: colors
@@ -157,3 +356,8 @@ name: colors
 name: colors
 
 ## Conclusion
+
+
+
+
+
