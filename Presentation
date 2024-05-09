@@ -74,11 +74,11 @@ We will be focusing on the following variables for our exploratory data analysis
 
 ```{r}
 
-employee <- read.csv("C:/Users/Gianna/Documents/STA 490/Final Project/EmployeeAttritionData.csv")
+employee <- read.csv("https://raw.githubusercontent.com/anafrance/FinalProject/main/EmployeeAttritionData.csv", header=TRUE)
 
 library(tidyverse)
 employee1 <- employee %>% 
-  dplyr::select(JobInvolvement, JobSatisfaction, EnvironmentSatisfaction)
+  dplyr::select(JobInvolvement, JobSatisfaction, EnvironmentSatisfaction, HourlyRate)
 
 
 ```
@@ -316,7 +316,7 @@ My.plotnScree = function(mat, legend = TRUE, method ="factors", main){
     xlab = nScree$Model
     ylab = "Eigenvalues"
     ##
-    par(col = 1, pch = 18)
+    par(col = 1, pch = 18, bg=NA)
     par(mfrow = c(1, 1))
     eig <- nScree$Analysis$Eigenvalues
     k <- 1:length(eig)
@@ -403,9 +403,20 @@ Loadings = My.loadings.var(mat=JobInvolvement, nfct=2, method="pca")$Loadings
 # pca loadings
 kable(round(Loadings,3),
   caption="Factor loadings of the first few PCAs and the cumulative proportion
-of variation explained by the corresponding PCAs in the self-compassion survey.")
+of variation explained by the corresponding PCAs in the employee survey.")
 ```
 
+---
+
+## Proportion of Variation Explained
+
+```{r}
+VarProp = My.loadings.var(mat=JobInvolvement, nfct=2, method="pca")$Prop.Var
+# pca loadings
+kable(round(VarProp,3),
+    caption="Cumulative and proportion of variances explained by each 
+    the principal component in the employee survey.")
+```
 
 ---
 class: inverse center middle
@@ -429,7 +440,7 @@ First, we did a model with all of our variables:
 - Department:
 - Hourly Rate:
 
-The only variables that were statistically significant were Job Satisfaction and Environment Satisfaction.
+The only variables that were statistically significant were Job Satisfaction, Environment Satisfaction, and Hourly Rate.
 
 ---
 name: colors
@@ -468,11 +479,36 @@ fit <- vglm(JobInvolvement ~ .,
 print(summary(fit))
 ```
 
+---
+
+## Model Assumptions
+
+One assumption that needs to be tested is collinearity betweeen the explanatory varibles. 
+
+```{r}
+library(corrplot)
+
+cor <- employee1 %>% 
+  dplyr::select(JobInvolvement, JobSatisfaction, EnvironmentSatisfaction, HourlyRate)
+
+corrplot(cor(cor), method = "number",tl.cex = 0.6, bg=)
+
+```
+
 
 ---
 name: colors
 
 ## Conclusion
+
+Not as many variables were correlated/significant in predicting Job Involvement. 
+
+Some of our variables were even negatively correlated.
+
+Job Satisfaction, Environment Satisfaction, and Hourly Rate were significant at the 0.1 alpha level.
+
+Continued work: restructuring PCs to include in the model to get better estimates. 
+
 
 
 ---
