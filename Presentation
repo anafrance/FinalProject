@@ -37,6 +37,7 @@ style_mono_light(
 
 ```
 
+
 <h1 align = "center"> Table of Contents </h1>
 <center><font size="7">  
 - Introduction <br>
@@ -279,9 +280,141 @@ class: inverse center middle
 ---
 name: colors
 
-## Title
+## PCA
+
+```{r}
+eng <- employee
+library(tidyverse)
+engage <- eng %>% 
+  dplyr::select(YearsAtCompany,YearsSinceLastPromotion, JobInvolvement, JobSatisfaction, WorkLifeBalance, Age, NumCompaniesWorked,  MonthlyIncome)
+```
+
+```{r}
+my.mode = function(dataset){
+  freq.tbl = table(dataset)
+  max.freq.id=which(freq.tbl==max(freq.tbl))
+  mode=names(freq.tbl[max.freq.id])
+  as.numeric(mode)
+}
+```
+
+```{r}
+
+My.plotnScree = function(mat, legend = TRUE, method ="factors", main){
+
+    ev <- eigen(cor(mat))    # get eigenvalues
+    ap <- parallel(subject=nrow(mat),var=ncol(mat), rep=5000,cent=.05)
+    nScree = nScree(x=ev$values, aparallel=ap$eigen$qevpea, model=method)  
+    ##
+    if (!inherits(nScree, "nScree")) 
+        stop("Method is only for nScree objects")
+    if (nScree$Model == "components") 
+        nkaiser = "Eigenvalues > mean: n = "
+    if (nScree$Model == "factors") 
+      nkaiser = "Eigenvalues > zero: n = "
+    # axis labels
+    xlab = nScree$Model
+    ylab = "Eigenvalues"
+    ##
+    par(col = 1, pch = 18)
+    par(mfrow = c(1, 1))
+    eig <- nScree$Analysis$Eigenvalues
+    k <- 1:length(eig)
+    plot(1:length(eig), eig, type="b", main = main, 
+        xlab = xlab, ylab = ylab, ylim=c(0, 1.2*max(eig)))
+    #
+    nk <- length(eig)
+    noc <- nScree$Components$noc
+    vp.p <- lm(eig[c(noc + 1, nk)] ~ k[c(noc + 1, nk)])
+    x <- sum(c(1, 1) * coef(vp.p))
+    y <- sum(c(1, nk) * coef(vp.p))
+    par(col = 10)
+    lines(k[c(1, nk)], c(x, y))
+    par(col = 11, pch = 20)
+    lines(1:nk, nScree$Analysis$Par.Analysis, type = "b")
+    if (legend == TRUE) {
+        leg.txt <- c(paste(nkaiser, nScree$Components$nkaiser), 
+                   c(paste("Parallel Analysis: n = ", nScree$Components$nparallel)), 
+                   c(paste("Optimal Coordinates: n = ", nScree$Components$noc)), 
+                   c(paste("Acceleration Factor: n = ", nScree$Components$naf))
+                   )
+        legend("topright", legend = leg.txt, pch = c(18, 20, NA, NA), 
+                           text.col = c(1, 3, 2, 4), 
+                           col = c(1, 3, 2, 4), bty="n", cex=0.7)
+    }
+    naf <- nScree$Components$naf
+    text(x = noc, y = eig[noc], label = " (OC)", cex = 0.7, 
+        adj = c(0, 0), col = 2)
+    text(x = naf + 1, y = eig[naf + 1], label = " (AF)", 
+        cex = 0.7, adj = c(0, 0), col = 4)
+}
+```
+
+```{r factor loadings}
+
+My.loadings.var <- function(mat, nfct, method="fa"){
+   # mat =  data matrix
+   # nfct = number of factors or components
+   # method = c("fa", "pca"), default = is "fa".
+    if(method == "fa"){ 
+     f1 <- factanal(mat, factors = nfct,  rotation = "varimax")
+     x <- loadings(f1)
+     vx <- colSums(x^2)
+     varSS = rbind('SS loadings' = vx,
+            'Proportion Var' = vx/nrow(x),
+           'Cumulative Var' = cumsum(vx/nrow(x)))
+     weight = f1$loadings[] 
+   } else if (method == "pca"){
+     pca <- prcomp(mat, center = TRUE, scale = TRUE)
+     varSS = summary(pca)$importance[,1:nfct]
+     weight = pca$rotation[,1:nfct]
+  }
+    list(Loadings = weight, Prop.Var = varSS)
+}
+
+```
 
 
+```{r}
+library(GPArotation)
+library(psych)
+library(nFactors)
+library(rmarkdown)
+library(knitr)
+library(parameters)
+library(corrplot)
+library(ggcorrplot)
+library(ggfortify)
+
+JobInvolvement <- engage
+My.plotnScree(mat=JobInvolvement, legend = TRUE, method ="components", 
+              main="Determination of Job Involvement")
+```
+
+---
+name: colors
+
+## Factor Loading
+
+```{r}
+
+Loadings = My.loadings.var(mat=JobInvolvement, nfct=2, method="pca")$Loadings
+#
+# pca loadings
+kable(round(Loadings,3),
+  caption="Factor loadings of the first few PCAs and the cumulative proportion
+of variation explained by the corresponding PCAs in the self-compassion survey.")
+```
+
+
+```{r}
+# Fit a multinomial logistic regression model 
+library(VGAM)
+fit <- vglm(JobInvolvement ~ Loadings, 
+            data = employee1, 
+            family = multinomial) 
+
+```
 
 
 ---
@@ -357,6 +490,16 @@ name: colors
 
 ## Conclusion
 
+
+---
+
+## Contributions
+
+Introduction and Exploratory Analysis ~ Jaiden
+
+PCA ~ Samantha
+
+Multinomial Logistic Regression ~ Gianna
 
 
 
